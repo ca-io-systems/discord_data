@@ -1,0 +1,50 @@
+{
+  "name": "caio-discord-bot",
+  "version": "1.0.0",
+  "description": "CAIO Client Intelligence Platform - Discord Bot",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "start:live": "tsx index-live-listener.ts",
+    "fetch:historical": "FETCH_MODE=BACKFILL npx tsx index-historical-fetcher.ts",
+    "fetch:weekly": "FETCH_MODE=WEEKLY FETCH_MONTHS_PRIMARY=0.25 npx tsx index-historical-fetcher.ts",
+    "clear:data": "npx tsx clear-enriched-data.ts",
+    "dev": "node --watch index.js",
+    "setup-kb-schema": "node scripts/setup-kb-schema.js",
+    "ingest": "node scripts/ingest-historic-messages.js",
+    "ingest:dry-run": "node scripts/ingest-historic-messages.js --dry-run",
+    "migrate:analytics": "node scripts/run-analytics-migration.js",
+    "migrate:rename": "node scripts/run-rename-migration.js",
+    "inspect-db": "node db-inspector.js",
+    "db:generate": "drizzle-kit generate:sqlite",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "db:check": "drizzle-kit check",
+    "db:drop": "drizzle-kit drop",
+    "db:verify": "tsx scripts/verify-db.ts"
+  },
+  "keywords": [
+    "discord",
+    "bot",
+    "turso",
+    "openai",
+    "client-intelligence"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@libsql/client": "^0.15.15",
+    "@whop/sdk": "^0.0.20",
+    "discord.js": "^14.14.1",
+    "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.45.1",
+    "node-cron": "^3.0.3",
+    "openai": "^4.28.0"
+  },
+  "devDependencies": {
+    "drizzle-kit": "^0.31.8",
+    "tsx": "^4.21.0",
+    "typescript": "^5.3.3"
+  }
+}
