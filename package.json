@@ -4,7 +4,7 @@
   "description": "CAIO Client Intelligence Platform - Discord Bot",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "tsx index-live-listener.ts",
     "start:live": "tsx index-live-listener.ts",
     "fetch:historical": "FETCH_MODE=BACKFILL npx tsx index-historical-fetcher.ts",
     "fetch:weekly": "FETCH_MODE=WEEKLY FETCH_MONTHS_PRIMARY=0.25 npx tsx index-historical-fetcher.ts",
