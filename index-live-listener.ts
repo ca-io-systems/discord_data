@@ -54,7 +54,8 @@
  * 
  * Environment Variables:
  * - DISCORD_BOT_TOKEN: Discord bot token (required)
- * - OPENAI_API_KEY: OpenAI API key for o3-mini (required)
+ * - OPENROUTER_API_KEY: OpenRouter API key for openai/gpt-5-nano (required)
+ * - OPENROUTER_MODEL: OpenRouter model to use (default: openai/gpt-5-nano)
  * - DEBUG: Enable debug logging (default: false)
  * - TEAM_MEMBER_IDS: Comma-separated Discord user IDs of team members
  * - TURSO_DATABASE_URL: Turso database URL (required)
@@ -89,8 +90,8 @@ import { URLExtractor } from './lib/url-extractor';
 
 const CONFIG = {
     DISCORD_BOT_TOKEN: process.env.DISCORD_BOT_TOKEN!,
-    OPENAI_API_KEY: process.env.OPENAI_API_KEY!,
-    OPENAI_MODEL: process.env.OPENAI_MODEL || 'o3-mini',
+    OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY!,
+    OPENROUTER_MODEL: process.env.OPENROUTER_MODEL || 'openai/gpt-5-nano',
     MIN_MESSAGE_LENGTH: parseInt(process.env.MIN_MESSAGE_LENGTH || '5'),
     DEBUG: process.env.DEBUG === 'true',
     CONSOLE_ONLY: false, // Toggle for safe testing
@@ -99,7 +100,7 @@ const CONFIG = {
 };
 
 // Validate required environment variables
-const requiredVars = ['DISCORD_BOT_TOKEN', 'OPENAI_API_KEY'] as const;
+const requiredVars = ['DISCORD_BOT_TOKEN', 'OPENROUTER_API_KEY'] as const;
 for (const varName of requiredVars) {
     if (!CONFIG[varName]) {
         console.error(`❌ Missing required environment variable: ${varName}`);
@@ -120,13 +121,14 @@ const discordClient = new Client({
 });
 
 const openaiClient = new OpenAI({
-    apiKey: CONFIG.OPENAI_API_KEY,
+    apiKey: CONFIG.OPENROUTER_API_KEY,
+    baseURL: 'https://openrouter.ai/api/v1',
     maxRetries: 2, // Default retry count for rate limits and connection errors
 });
 
 // Initialize Analytics module
 const analytics = new Analytics(tursoClient, openaiClient, {
-    openaiModel: CONFIG.OPENAI_MODEL,
+    openaiModel: CONFIG.OPENROUTER_MODEL,
     debug: CONFIG.DEBUG,
     consoleOnly: CONFIG.CONSOLE_ONLY
 });
@@ -324,7 +326,7 @@ async function matchReplyToQuery(teamReply: string, queries: any[], channel: Tex
         ).join('\n');
 
         const completion = await openaiClient.chat.completions.create({
-            model: CONFIG.OPENAI_MODEL,
+            model: CONFIG.OPENROUTER_MODEL,
             messages: [
                 {
                     role: 'system',
@@ -468,7 +470,7 @@ async function processMessageWithAI(message: Message, channel: TextChannel) {
         }
 
         const completion = await openaiClient.chat.completions.create({
-            model: CONFIG.OPENAI_MODEL,
+            model: CONFIG.OPENROUTER_MODEL,
             messages: [
                 {
                     role: 'system',
